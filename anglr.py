@@ -130,11 +130,20 @@ class Angle:
         return "<Angle: {} radians, {} degrees, {} gradians, {} hours, {} arcminutes, {} arcseconds, offset ({}, {})>".format(self.radians, self.degrees, self.gradians, self.hours, self.arcminutes, self.arcseconds, self.x, self.y)
     
     # unit circle functions
-    def normalized(self, lower = 0, upper = None):
+    def normalized(self, lower=0, upper=None):
         """Returns a new `Angle` instance that represents the angle normalized on the unit circle to be between `lower` (inclusive) and `upper` (exclusive, defaults to `lower + TAU`)."""
         if upper is None: upper = lower + TAU
-        if lower > upper: lower, upper = upper, lower # swap bounds if upper bound is greater than lower bound
-        return Angle(lower + (self.radians % TAU) * (upper - lower))
+        if lower > upper: lower, upper = upper, lower # swap bounds if lower bound is greater than upper bound
+        range_width = upper - lower
+        
+        # Normalize to the range [0, range_width)
+        normalized_angle = (self.radians - lower) % range_width
+        
+        # Adjust to the range [lower_bound, upper_bound)
+        if normalized_angle < 0:
+            normalized_angle += range_width
+
+        return Angle(normalized_angle + lower)
     def angle_between_clockwise(self, angle):
         """Returns a new `Angle` instance that represents the clockwise angle from this `Angle` instance to `angle` on the unit circle (this is always non-negative)."""
         return Angle((Angle(angle).radians - self.radians) % TAU)

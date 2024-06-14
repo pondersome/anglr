@@ -118,11 +118,31 @@ Angle arithmetic:
     print(-abs(+Angle(pi)))
     print(round(Angle(-75.87)))
     print(Angle(-4.3) <= Angle(pi / 4) > Angle(0.118) == Angle(0.118))
-    print(Angle(-870.3, "gradians").normalized())
-    print(Angle(-870.3, "gradians").normalized(0)) # same as above
-    print(Angle(-870.3, "gradians").normalized(0, 2 * pi)) # same as above
+
+    print("0 to 2pi sanity checks")
+    print(Angle(0).normalized(0,2*pi)) # 0 as provided
+    print(Angle(pi).normalized(0,2*pi)) # pi as provided
+    print(Angle(-pi).normalized(0,2*pi)) # wrap to pi
+    print(Angle(7*pi).normalized(2*pi,0)) # same as above despite range out of order
+    print("\ndefault args and wrapping")  
+    print(Angle(-7.5*pi).normalized())
+    print(Angle(-7.5*pi).normalized(0)) # same as above
+    print(Angle(-7.5*pi).normalized(0,2*pi)) # same as above
+    print(Angle(-8.25*pi).normalized(0,2*pi)) # wrap beyond above to cross Tau
+    print(Angle(8.25*pi).normalized(0,2*pi)) # cross over other way
+    print("\n-pi to pi")
+    print(Angle(0).normalized(-pi,pi)) #sanity check
+    print(Angle(-7.5*pi).normalized(-pi,pi))
+    print(Angle(-8.25*pi).normalized(-pi,pi)) # cross over
+    print("\n-pi to 0") # not sure why this normalization range is useful or if results are valid:
+    print(Angle(0).normalized(-pi,0))
+    print(Angle(-pi/2).normalized(-pi,0))
+    print(Angle(pi/2).normalized(-pi,0))
+    print("\nbecause we like gradians?")
+    print(Angle(-870.3, "gradians").normalized(0, 2 * pi))
     print(Angle(-870.3, "gradians").normalized(-pi, pi))
     print(Angle(-870.3, "gradians").normalized(-pi, 0))
+    
     print(Angle(1, "degrees").angle_between_clockwise(Angle(0, "degrees")))
     print(Angle(1, "degrees").angle_between(Angle(0, "degrees")))
     print(Angle(0, "degrees").angle_within(Angle(-45, "degrees"), Angle(45, "degrees")))
@@ -135,6 +155,7 @@ To run all of the above as tests, simply run ``python3 tests.py`` in the project
 Installing
 ----------
 
+** THIS VERSION IS NOT AVAILABLE IN PIP YET - IGNORE BELOW **
 The easiest way to install this is using ``pip3 install anglr``.
 
 Otherwise, download the source distribution from `PyPI <https://pypi.python.org/pypi/anglr/>`__, and extract the archive.
@@ -152,6 +173,7 @@ Authors
 ::
 
     Uberi <azhang9@gmail.com> (Anthony Zhang)
+    Pondersome <karim@compuguru.com> (Karim Virani)
 
 Please report bugs and suggestions at the `issue tracker <https://github.com/Uberi/anglr/issues>`__!
 

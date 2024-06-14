@@ -46,11 +46,32 @@ class AngleTestCase(unittest.TestCase):
         self.assertEqual(str(Angle(-4.3) <= Angle(pi / 4) > Angle(0.118) == Angle(0.118)), "True", "bad operation")
 
     def test_unit_circle(self):
-        self.assertEqual(str(Angle(-870.3, "gradians").normalized()), "32.540085710391615 rad", "bad operation")
-        self.assertEqual(str(Angle(-870.3, "gradians").normalized(0)), "32.540085710391615 rad", "bad operation") # same as above
-        self.assertEqual(str(Angle(-870.3, "gradians").normalized(0, 2 * pi)), "32.540085710391615 rad", "bad operation") # same as above
-        self.assertEqual(str(Angle(-870.3, "gradians").normalized(-pi, pi)), "29.398493056801822 rad", "bad operation")
-        self.assertEqual(str(Angle(-870.3, "gradians").normalized(-pi, 0)), "13.128450201606015 rad", "bad operation")
+
+        #print("0 to 2pi sanity checks")
+        self.assertEqual(str(Angle(0).normalized(0,2*pi)), "0.0 rad", "bad operation") # 0 as provided
+        self.assertEqual(str(Angle(pi).normalized(0,2*pi)), "3.141592653589793 rad", "bad operation") # pi as provided
+        self.assertEqual(str(Angle(-pi).normalized(0,2*pi)), "3.141592653589793 rad", "bad operation") # wrap to pi
+        self.assertEqual(str(Angle(7*pi).normalized(2*pi,0)), "3.141592653589793 rad", "bad operation") # same as above despite range out of order
+        #print("\ndefault args and wrapping")  
+        self.assertEqual(str(Angle(-7.5*pi).normalized()), "1.5707963267948983 rad", "bad operation")
+        self.assertEqual(str(Angle(-7.5*pi).normalized(0)), "1.5707963267948983 rad", "bad operation") # same as above
+        self.assertEqual(str(Angle(-7.5*pi).normalized(0,2*pi)), "1.5707963267948983 rad", "bad operation") # same as above
+        self.assertEqual(str(Angle(-8.25*pi).normalized(0,2*pi)), "5.497787143782137 rad", "bad operation") # wrap beyond above to cross Tau
+        self.assertEqual(str(Angle(8.25*pi).normalized(0,2*pi)), "0.7853981633974492 rad", "bad operation") # cross over other way
+        #print("\n-pi to pi")
+        self.assertEqual(str(Angle(0).normalized(-pi,pi)), "0.0 rad", "bad operation") #sanity check
+        self.assertEqual(str(Angle(-7.5*pi).normalized(-pi,pi)), "1.5707963267948983 rad", "bad operation")
+        self.assertEqual(str(Angle(-8.25*pi).normalized(-pi,pi)), "-0.7853981633974492 rad", "bad operation") # cross over
+        #print("\n-pi to 0") # not sure why this normalization range is useful or if results are valid:
+        self.assertEqual(str(Angle(0).normalized(-pi,0)), "-3.141592653589793 rad", "bad operation")
+        self.assertEqual(str(Angle(-pi/2).normalized(-pi,0)), "-1.5707963267948966 rad", "bad operation")
+        self.assertEqual(str(Angle(pi/2).normalized(-pi,0)), "-1.5707963267948966 rad", "bad operation")
+        #print("\nbecause we like gradians?")
+        self.assertEqual(str(Angle(-870.3, "gradians").normalized(0, 2 * pi)), "5.178915489442774 rad", "bad operation")
+        self.assertEqual(str(Angle(-870.3, "gradians").normalized(-pi, pi)), "-1.104269817736812 rad", "bad operation")
+        self.assertEqual(str(Angle(-870.3, "gradians").normalized(-pi, 0)), "-1.104269817736812 rad", "bad operation")
+        
+        #x=Angle(-870.3, "gradians") #we seem to enjoy gradians  
         self.assertEqual(str(Angle(1, "degrees").angle_between_clockwise(Angle(0, "degrees"))), "6.265732014659643 rad", "bad operation")
         self.assertEqual(str(Angle(1, "degrees").angle_between(Angle(0, "degrees"))), "0.017453292519943295 rad", "bad operation")
         self.assertEqual(str(Angle(0, "degrees").angle_within(Angle(-45, "degrees"), Angle(45, "degrees"))), "True", "bad operation")
