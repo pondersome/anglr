@@ -115,7 +115,7 @@ class Angle:
         if isinstance(angle, Angle): return self.radians <= angle.radians
         return NotImplemented
     def __eq__(self, angle):
-        if isinstance(angle, Angle): return self.radians == angle.radians
+        if isinstance(angle, Angle): return math.isclose(self.radians,angle.radians, abs_tol=1e-9)
         return NotImplemented
     
     # type conversions
